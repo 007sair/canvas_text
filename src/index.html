@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>HERO</title>
+</head>
+<body>
+
+<div id="app" class="wrapper">
+
+	<canvas ref="myCanvas"></canvas>
+
+	<div class="forms">
+		<mt-field label="文案" placeholder="文案" v-model="text"></mt-field>
+		<mt-field label="字号px" placeholder="字号" v-model="font_size"></mt-field>
+		<mt-field label="起始X坐标" placeholder="起始X坐标" v-model="dx"></mt-field>
+		<mt-field label="起始Y坐标" placeholder="起始Y坐标" v-model="dy"></mt-field>
+		<mt-cell class="page-range" :label="'value:' + angle" title="旋转角度">
+			<mt-range
+				v-model="angle"
+				:min="-180"
+				:max="180"
+				:step="1"
+				:bar-height="2">
+			</mt-range>
+		</mt-cell>
+		<mt-cell class="page-range" :label="'value:' + fake_scale / 100" title="缩放">
+			<mt-range
+				v-model="fake_scale"
+				:min="10"
+				:max="300"
+				:step="10"
+				:bar-height="2">
+			</mt-range>
+		</mt-cell>
+
+		<div class="btn-box">
+			<mt-button @click="createPoster" size="large" type="primary">生成海报</mt-button>
+		</div>
+
+		<mt-popup
+			class="poster"
+			v-model="is_show_poster"
+		>
+			<h2>海报</h2>
+			<img v-if="poster" :src="poster" alt="">
+			<p class="tips">注：此处生成的海报宽为2000，高度按照原始比例计算获得。</p>
+			<mt-button @click="is_show_poster = false" size="normal" type="primary">关闭</mt-button>
+		</mt-popup>
+
+	</div>
+
+</div>
+
+</body>
+</html>

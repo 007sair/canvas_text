@@ -1,0 +1,61 @@
+//------------------
+// 特定机型的媒体查询
+// 针对页面被重置了html的font-size后会闪跳的问题，设置特定机型的媒体查询
+//------------------
+
+// 根据自身页面设置media输出
+$output: 750 !default;
+
+// 是否遍历所以机型的媒体查询
+$is_each: false !default;
+
+// 根据屏幕尺寸和定义的输出变量
+// 设置当前html的fontSize
+@function screen2fontSize($clientWidth) {
+	@if $output == 640 {
+		@return (20 * (($clientWidth + 1) / 320));
+	}
+	@if $output == 750 {
+		@return $clientWidth / 10;
+	}
+	@warn "error $output not 640 or 750";
+	@return $clientWidth / 10;
+}
+
+/**
+ * 213px显示屏样式 LG Optimus One
+ * 320px显示屏样式 苹果4/4S/5C/5S黑莓Z30
+ * 360px显示屏样式 索尼Z1
+ * 384px显示屏样式 黑莓Z10 谷歌 Nexus 6 LG Optimus G
+ * 399px显示屏样式 三星galaxyNote
+ * 414px显示屏样式 苹果6plus
+ * 424px显示屏样式 LG 4X
+ * 480px显示屏样式 索尼MT27i Xperia sola
+ * 640px显示屏样式 摩托罗拉Droid3/4/Razr Atrix 4g
+ * 640px显示屏样式
+ * 640px以上显示屏样式
+ */
+$screens: 212PX, 319PX, 359PX, 383PX, 399PX, 414PX, 423PX, 479PX, 539PX, 639PX, 640PX;
+
+html {
+	@include iphone5() {
+		font-size: screen2fontSize(320PX);
+	}
+	@include iphone6() {
+		font-size: screen2fontSize(375PX);
+	}
+	@include iphone6-plus() {
+		font-size: screen2fontSize(414PX);
+	}
+	@include iphoneX() {
+		font-size: screen2fontSize(375PX);
+	}
+
+	@if $is_each {
+		@each $screen in $screens {
+			@include min-screen($screen) {
+				font-size: screen2fontSize($screen);
+			}
+		}
+	}
+}

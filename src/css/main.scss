@@ -1,0 +1,91 @@
+/*** px2rem的配置 ***/
+// https://github.com/cuth/postcss-pxtorem
+@use postcss-pxtorem {
+	rootValue: 75; 		// 基数 1rem = 75px
+	replace: true;      // false：不替换当前属性为px，会再生成一条相同的属性，rem的优先级更高
+	propList: ['*'];	// 匹配属性列表，*号代表匹配所有属性
+	minPixelValue: 2;   // 忽略1px的转换 只转换大于1px的值
+};
+
+/*** Sass工具 ***/
+@import "base/_variables";		// 变量
+@import "base/mixin";  			// 混合器
+@import "base/media-queries";  	// 媒体查询简写
+
+@import "base/_reset";  		// 样式重置
+@import "base/_media";  		// 媒体查询
+@import "base/_helper";	   		// 公共样式
+@import "base/_iphoneX";	   	// iphoneX适配
+
+// 模块
+@import "mod/mu";	   // 移动端通用弹层库的样式
+
+/*** 页面css入口 ***/
+
+// page1
+
+html {
+	@include min-screen(540px) {
+		font-size: 54PX !important;
+	}
+}
+
+body {
+	background-color: #f2f2f2;
+	
+}
+
+.wrapper {
+	margin: 0 auto;
+	padding-bottom: 50px;
+	max-width: 540PX;
+	font-size: 24px;
+}
+
+canvas {
+	display: block;
+	background-color: #fff;
+	line-height: 1;
+}
+
+.forms {
+	margin-top: 20px;
+
+	.page-range {
+		.mt-range {
+			width: 100%;
+		}
+		.mint-cell-value {
+			flex: 2.5;
+			position: relative;
+		}
+	}
+	
+	.btn-box {
+		margin-top: 40px;
+		padding: 0 10px;
+	}
+}
+
+.poster {
+	padding: 0 30px 30px;
+	border-radius: 0.5em;
+	text-align: center;
+	h2 {
+		padding: 10px 0;
+		font-size: 36px;
+	}
+	img {
+		width: 550px;
+	}
+	.tips {
+		margin-top: 20px;
+		text-align: left;
+		line-height: 1.35;
+		color: #999;
+	}
+	button {
+		margin-top: 40px;
+		padding: 0 50px;
+	}
+}
