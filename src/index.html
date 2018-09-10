@@ -13,31 +13,48 @@
 	<canvas ref="myCanvas"></canvas>
 
 	<div class="forms">
-		<mt-field label="文案" placeholder="文案" v-model="text"></mt-field>
-		<mt-field label="字号px" placeholder="字号" v-model="font_size"></mt-field>
-		<mt-field label="起始X坐标" placeholder="起始X坐标" v-model="dx"></mt-field>
-		<mt-field label="起始Y坐标" placeholder="起始Y坐标" v-model="dy"></mt-field>
-		<mt-cell class="page-range" :label="'value:' + angle" title="旋转角度">
+		<mt-field label="文案" placeholder="文案" v-model="canvas_data.text"></mt-field>
+		<mt-field label="字号" placeholder="字号，单位:px" v-model="canvas_data.font_size"></mt-field>
+		<mt-cell class="page-range" :label="'value:' + canvas_data.sx" title="X坐标">
 			<mt-range
-				v-model="angle"
+				v-model="canvas_data.sx"
+				:min="sx_range[0]"
+				:max="sx_range[1]"
+				:step="1"
+				:bar-height="2">
+			</mt-range>
+		</mt-cell>
+		<mt-cell class="page-range" :label="'value:' + canvas_data.sy" title="Y坐标">
+			<mt-range
+				v-model="canvas_data.sy"
+				:min="sy_range[0]"
+				:max="sy_range[1]"
+				:step="1"
+				:bar-height="2">
+			</mt-range>
+		</mt-cell>
+		<mt-cell class="page-range" :label="'value:' + canvas_data.angle" title="角度">
+			<mt-range
+				v-model="canvas_data.angle"
 				:min="-180"
 				:max="180"
 				:step="1"
 				:bar-height="2">
 			</mt-range>
 		</mt-cell>
-		<mt-cell class="page-range" :label="'value:' + fake_scale / 100" title="缩放">
+		<mt-cell class="page-range" :label="'value:' + canvas_data.fake_scale / 100" title="缩放">
 			<mt-range
-				v-model="fake_scale"
-				:min="10"
-				:max="300"
+				v-model="canvas_data.fake_scale"
+				:min="0"
+				:max="200"
 				:step="10"
 				:bar-height="2">
 			</mt-range>
 		</mt-cell>
 
 		<div class="btn-box">
-			<mt-button @click="createPoster" size="large" type="primary">生成海报</mt-button>
+			<mt-button class="btn-reset" @click="reset" type="default">重置</mt-button>
+			<mt-button class="btn-createposter" @click="createPoster" size="large" type="primary">生成海报</mt-button>
 		</div>
 
 		<mt-popup

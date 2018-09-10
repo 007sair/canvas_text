@@ -27,23 +27,29 @@ Vue.use(Mint);
 
 const SCREEN_WIDTH = Math.min(540, document.documentElement.clientWidth)
 
+const canvas_data = {
+	text: '测试测试Test',
+	font_size: 40,
+	sx: 0,
+	sy: 0,
+	angle: 0,
+	fake_scale: 100
+}
+
 new Vue({
 	el: '#app',
 	data: {
+		sx_range: [],
+		sy_range: [],
 		canvas_width: 0,
 		canvas_height: 0,
-		text: '测试Test',
-		font_size: 40,
-		angle: 0,
-		dx: 100,
-		dy: 50,
-		fake_scale: 100,
-		poster: '',
-		big_scale: 1, // 实际海报大小与预览区域的比例
-		is_show_poster: false // 是否显示海报
+		poster: '', // 海报url base64
+		is_show_poster: false, // 是否显示海报
+		canvas_data: {}
 	},
 
 	methods: {
+
 		// 绘制文字
 		drawText() {
 			const BASE_WIDTH = SCREEN_WIDTH  	// canvas舞台的宽度
@@ -56,60 +62,74 @@ new Vue({
 			this.canvas_width = canvas.width
 			this.canvas_height = canvas.height
 
+			this.sx_range = [0, this.canvas_width]
+			this.sy_range = [0, this.canvas_height]
+
 			this.draw(canvas)
 		},
 
-		draw(canvas) {
+		/**
+		 * 绘制canvas
+		 * @param {canvas} canvas 			需要绘制的canvas对象
+		 * @param {number} canvas_scale 	当前预览canvas与生成海报的canvas之间的比例大小
+		 */
+		draw(canvas, canvas_scale = 1) {
 			let ctx = canvas.getContext('2d')
 
-			let font_size = this.font_size * this.big_scale
-
-			ctx.fillStyle = "red";
-        	ctx.fillRect (0, 0, canvas.width, canvas.height);
-			
-
-			ctx.fillStyle = '#fff';
-			ctx.textBaseline = 'top';
-			ctx.font = `${font_size}px 宋体`; //设置字体
-
-			let text_info = ctx.measureText(this.text);
-
-			let dx = +this.dx * this.big_scale,
-				dy = +this.dy * this.big_scale
-
-			let translate_x = text_info.width / 2 + dx,
-				translate_y = (font_size * 1.4) / 2 + dy
-
 			// 这个scale才是真实的，data里面的scale是为了range控件放大了100倍
-			let scale = this.fake_scale / 100
+			let scale = this.canvas_data.fake_scale / 100
+
+			let font_size = this.canvas_data.font_size * canvas_scale
+
+			ctx.fillStyle = "red"
+        	ctx.fillRect (0, 0, canvas.width, canvas.height)
+
+			ctx.fillStyle = '#fff'
+			ctx.textBaseline = 'top'
+			ctx.font = `${font_size}px 宋体` //设置字体
+
+			let text_info = ctx.measureText(this.canvas_data.text)
+
+			let sx = +this.canvas_data.sx * canvas_scale,
+				sy = +this.canvas_data.sy * canvas_scale
+
+			let translate_x = text_info.width / 2 + sx,
+				translate_y = (font_size * 1.4) / 2 + sy
 
 			ctx.translate(translate_x, translate_y);
 
-			ctx.rotate(this.angle * Math.PI / 180);
+			ctx.rotate(this.canvas_data.angle * Math.PI / 180);
 
 			ctx.scale(scale, scale);
 
 			ctx.translate(-translate_x, -translate_y);
 
-			ctx.fillText(this.text, dx, dy);
+			ctx.fillText(this.canvas_data.text, sx, sy);
 
 			return canvas
 		},
 
-		// 生成图片
+		// 重置
+		reset() {
+			this.canvas_data = Object.assign({}, canvas_data)
+		},
+
+		/**
+		 * 生成海报
+		 */
 		createPoster() {
 			let expect_width = 2000,
 				canvas_ratio = this.canvas_width / this.canvas_height,
 				expect_height = 2000 / canvas_ratio
 
-			this.big_scale = expect_width / this.canvas_width
+			let	canvas_scale = expect_width / this.canvas_width
 
 			let canvas = document.createElement('canvas')
 
 			canvas.width = expect_width
 			canvas.height = expect_height
 
-			let temp = this.draw(canvas)
+			let temp = this.draw(canvas, canvas_scale)
 
 			this.poster = temp.toDataURL('image/jpeg', 0.92);
 			
@@ -118,29 +138,27 @@ new Vue({
 
 	},
 
+	beforeCreate() {
+		this.$nextTick(function () {
+			this.canvas_data = Object.assign({}, canvas_data)
+		})
+	},
+
+	created() {
+		this.init_data = JSON.parse(JSON.stringify(this.canvas_data))
+	},
+
 	mounted() {
 		this.drawText()
 	},
 
 	watch: {
-		text() {
-			this.drawText()
-		},
-		font_size() {
-			this.drawText()
-		},
-		angle() {
-			this.drawText()
-		},
-		dx() {
-			this.drawText()
-		},
-		dy() {
-			this.drawText()
-		},
-		fake_scale() {
-			this.drawText()
-		},
+		canvas_data: {
+			handler() {
+				this.drawText()
+			},
+			deep: true
+		}
 	},
 
 })

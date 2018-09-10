@@ -64,6 +64,14 @@ canvas {
 	.btn-box {
 		margin-top: 40px;
 		padding: 0 10px;
+		display: flex;
+		.btn-reset {
+			margin-right: 20px;
+			flex: 1;
+		}
+		.btn-createposter {
+			flex: 2;
+		}
 	}
 }
 
