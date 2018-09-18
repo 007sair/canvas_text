@@ -94,7 +94,7 @@ new Vue({
 				sy = +this.canvas_data.sy * canvas_scale
 
 			let translate_x = text_info.width / 2 + sx,
-				translate_y = (font_size * 1.4) / 2 + sy
+				translate_y = (font_size * 1.2) / 2 + sy
 
 			ctx.translate(translate_x, translate_y);
 
